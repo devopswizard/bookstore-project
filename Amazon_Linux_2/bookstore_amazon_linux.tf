@@ -9,8 +9,6 @@ terraform {
 
 provider "aws" {
   region = "us-east-1"
-  # secret_key = "xxxxxx"
-  # access_key = "xxxxxx"
 }
 
 resource "aws_instance" "tf-docker-ec2" {
@@ -32,8 +30,13 @@ resource "aws_instance" "tf-docker-ec2" {
           -o /usr/local/bin/docker-compose
           chmod +x /usr/local/bin/docker-compose
           yum install git -y
-          git clone https://github.com/joshuatallman/bookstore-project.git
-          cd /home/ec2-user/bookstore-project
+          cd /home/ec2-user
+          mkdir bookstore-project
+          cd bookstore-project
+          git init
+          git remote add origin https://github.com/joshuatallman/bookstore-project.git
+          git fetch origin branchX
+          git switch branchX
           docker build -t joshuatallman/bookstoreproject:latest .
           docker-compose up -d
           EOF

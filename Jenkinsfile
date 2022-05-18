@@ -4,7 +4,7 @@ pipeline {
 
     stages {
 
-        stage("Interactive_Input") {
+        stage("Interactive Input") {
             steps {
                 script {
 
@@ -17,11 +17,11 @@ pipeline {
                             id: 'userInput', message: 'Enter path of test reports:?',
                             parameters: [
                                 [$class: 'ChoiceParameterDefinition',
-                    choices: ['Ubuntu 18.04','Amazon Linux-2', 'Debian', "Windows Server 2019"].join('\n'),
+                    choices: ['Ubuntu_18_04','Amazon_Linux_2'].join('\n'),
                     name: 'Server',
                     description: 'Select the Operating System'],
                                 [$class: 'ChoiceParameterDefinition',
-                    choices: ['v1','v2', 'v3', "v4"].join('\n'),
+                    choices: ['v1','v2'.join('\n'),
                     name: 'AppVersion',
                     description: 'Select Your App Version']
                             ])
@@ -34,6 +34,15 @@ pipeline {
                     echo("Selected Server: ${inputServer}")
                     echo("Selected Version: ${inputAppVersion}")
                 }
+            }
+        }
+        stage("Create Server and App") {
+            steps {
+                echo 'Creating Prod Server via Terraform...'
+                sh "cd ./${inputServer}"
+                sh "sed -i 's/branchX/${inputAppVersion}/' ./bookstore*.tf"
+                sh "terraform init"
+                sh "terraform apply --auto-approve"
             }
         }
     }
