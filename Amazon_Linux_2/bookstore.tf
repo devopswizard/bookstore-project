@@ -26,6 +26,7 @@ resource "aws_instance" "tf-docker-ec2" {
           systemctl start docker
           systemctl enable docker
           usermod -a -G docker ec2-user
+          usermod -a -G docker jenkins
           curl -L "https://github.com/docker/compose/releases/download/1.26.2/docker-compose-$(uname -s)-$(uname -m)" \
           -o /usr/local/bin/docker-compose
           chmod +x /usr/local/bin/docker-compose
@@ -37,6 +38,7 @@ resource "aws_instance" "tf-docker-ec2" {
           git remote add origin https://github.com/joshuatallman/bookstore-project.git
           git fetch origin branchX
           git switch branchX
+          newgrp docker
           docker build -t joshuatallman/bookstoreproject:latest .
           docker-compose up -d
           EOF
